@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import {useBreeds} from "./hooks/useBreeds";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const {data, loading, error} = useBreeds()
+    const arr: string[] = []
+    const [pics, setPics] = useState<boolean>(false)
+
+    if(data!=null ) {
+        for (const key of Object.keys(data)) {
+            arr.push(`${key} `)
+        }
+
+    }
+
+    async function getImages(breed: string) {
+        setPics(prevState => !prevState)
+        console.log(breed)
+    }
+
+    return (
+        <div className="app">
+            <div className="list">
+                {loading && <p>Loading...</p>}
+                {error && <p>{error}</p>}
+                {arr.map(((item, value) => {
+                    return <ul>
+                        <li onClick={() => getImages(item)} key={value}>
+                           <p>{item}</p>
+                            {pics && <div>123</div>}
+                        </li>
+                    </ul>
+                }))}
+            </div>
+        </div>
+    );
 }
 
 export default App;
